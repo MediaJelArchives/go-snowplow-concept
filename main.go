@@ -38,9 +38,25 @@ func TrackerMiddleWare() gin.HandlerFunc {
 		sp.OptionAppId("iHeartJane-golang"),
 		sp.OptionPlatform("srv"))
 
+	IHeartJaneContext := []sp.SelfDescribingJson{
+		*sp.InitSelfDescribingJson(
+			"iglu:com.mediajel.events/iheartjane/jsonschema/1-0-0",
+			map[string]interface{}{
+				"advertiserId": "example",
+				"advertiserName": "example",
+				"storeId": "example",
+				"storeName": "example",
+				"locationId": "example",
+				"locationName": "example",
+				
+			},
+		),
+	}
+
 	return func(context *gin.Context) {
 		context.Set("tracker", tracker)
 		context.Set("subject", subject)
+		context.Set("IHeartJaneContext", IHeartJaneContext)
 		context.Next()
 	}
 }
@@ -48,10 +64,12 @@ func TrackerMiddleWare() gin.HandlerFunc {
 func PageviewTrackingDemo(context *gin.Context) {
 	tracker := context.MustGet("tracker").(*sp.Tracker)
 	subject := context.MustGet("subject").(*sp.Subject)
+	IHeartJaneContext := context.MustGet("IHeartJaneContext").(*[]sp.SelfDescribingJson)
 
 	tracker.TrackPageView(sp.PageViewEvent{
 		PageUrl: sp.NewString("{{PAGE_URL}}"), // REQUIRED
 		Subject: subject,
+		Contexts: *IHeartJaneContext,
 	})
 
 	context.JSON(200, gin.H{ "status": "success" })
@@ -59,6 +77,7 @@ func PageviewTrackingDemo(context *gin.Context) {
 
 func EcommerceTrackingDemo(context *gin.Context) {
 	tracker := context.MustGet("tracker").(*sp.Tracker)
+	IHeartJaneContext := context.MustGet("IHeartJaneContext").(*[]sp.SelfDescribingJson)
 
 	// Example Cart Items
 	items := []sp.EcommerceTransactionItemEvent{
@@ -90,9 +109,10 @@ func EcommerceTrackingDemo(context *gin.Context) {
 		Country:     sp.NewString("France"),
 		Currency:    sp.NewString("EUR"),
 		Items:       items,
+		Contexts: *IHeartJaneContext,
 	})
 
 	context.JSON(200, gin.H{ "status": "success"})
 }
 
-func 
+

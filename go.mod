@@ -1,4 +1,4 @@
-module mediajel/go-snowplow-concept
+module github.com/Mediajel/go-snowplow-concept
 
 go 1.18
 

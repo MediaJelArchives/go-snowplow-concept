@@ -1,5 +1,7 @@
 # Description
 
+Proof of concept on the snowplow golang tracker
+
 # Setup
 
 Ensure you have `Go >= 1.18` installed. You may follow these [instructions](https://go.dev/doc/install) to install Go in your environment
