@@ -38,16 +38,16 @@ func TrackerMiddleWare() gin.HandlerFunc {
 		sp.OptionAppId("iHeartJane-golang"),
 		sp.OptionPlatform("srv"))
 
-	IHeartJaneContext := []sp.SelfDescribingJson{
+	iHeartJaneContext := []sp.SelfDescribingJson{
 		*sp.InitSelfDescribingJson(
 			"iglu:com.mediajel.events/iheartjane/jsonschema/1-0-0",
 			map[string]interface{}{
-				"advertiserId": "example",
-				"advertiserName": "example",
-				"storeId": "example",
-				"storeName": "example",
-				"locationId": "example",
-				"locationName": "example",
+				"advertiserId": "{{ADVERTISER_ID}}",
+				"advertiserName": "{{ADVERTISER_NAME}}",
+				"storeId": "{{STORE_ID}}",
+				"storeName": "{{STORE_NAME}}",
+				"locationId": "{{LOCATION_ID}}",
+				"locationName": "{{LOCATION_NAME}}",
 				
 			},
 		),
@@ -56,7 +56,7 @@ func TrackerMiddleWare() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		context.Set("tracker", tracker)
 		context.Set("subject", subject)
-		context.Set("IHeartJaneContext", IHeartJaneContext)
+		context.Set("iHeartJaneContext", iHeartJaneContext)
 		context.Next()
 	}
 }
@@ -64,12 +64,12 @@ func TrackerMiddleWare() gin.HandlerFunc {
 func PageviewTrackingDemo(context *gin.Context) {
 	tracker := context.MustGet("tracker").(*sp.Tracker)
 	subject := context.MustGet("subject").(*sp.Subject)
-	IHeartJaneContext := context.MustGet("IHeartJaneContext").([]sp.SelfDescribingJson)
+	iHeartJaneContext := context.MustGet("iHeartJaneContext").([]sp.SelfDescribingJson)
 
 	tracker.TrackPageView(sp.PageViewEvent{
-		PageUrl: sp.NewString("{{PAGE_URL}}"), // REQUIRED
+		PageUrl: sp.NewString("{{PAGE_URL}}"),
 		Subject: subject,
-		Contexts: IHeartJaneContext,
+		Contexts: iHeartJaneContext,
 	})
 
 	context.JSON(200, gin.H{ "status": "success" })
@@ -77,7 +77,7 @@ func PageviewTrackingDemo(context *gin.Context) {
 
 func EcommerceTrackingDemo(context *gin.Context) {
 	tracker := context.MustGet("tracker").(*sp.Tracker)
-	IHeartJaneContext := context.MustGet("IHeartJaneContext").([]sp.SelfDescribingJson)
+	iHeartJaneContext := context.MustGet("iHeartJaneContext").([]sp.SelfDescribingJson)
 
 	// Example Cart Items
 	items := []sp.EcommerceTransactionItemEvent{
@@ -109,7 +109,7 @@ func EcommerceTrackingDemo(context *gin.Context) {
 		Country:     sp.NewString("France"),
 		Currency:    sp.NewString("EUR"),
 		Items:       items,
-		Contexts: IHeartJaneContext,
+		Contexts: iHeartJaneContext,
 	})
 
 	context.JSON(200, gin.H{ "status": "success"})
