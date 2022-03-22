@@ -9,29 +9,34 @@ func main() {
 	router := gin.Default()
 	router.Use(TrackerMiddleWare())
 	router.GET("/pageview", PageviewTrackingDemo)
+	router.GET("/ecommerce", EcommerceTrackingDemo)
 	router.Run("localhost:3000")
 }
 
 func TrackerMiddleWare() gin.HandlerFunc {
-	// Instantiate a subject & override values
+	// Instantiate a subject/user
 	subject := sp.InitSubject()
+
+	/*
+	Optionally, if these functions are not implemented
+	on a REST API request/response and the data resolution is lacking
+	an option we have is manually overriding the subject/user values.
+
+	Ex. 
 	subject.SetUserId("{{USER_ID}}")
-	subject.SetDomainUserId("{{DOMAIN_USER_ID")
+	subject.SetDomainUserId("{{DOMAIN_USER_ID}}") 
 	subject.SetIpAddress("{{IP_ADDRESS}}")
-	subject.SetNetworkUserId("{{NETWORK_USER_ID}}")
+	subject.SetNetworkUserId("{{NETWORK_USER_ID}}") 
 	subject.SetUseragent("{{USER_AGENT}}")
 	subject.SetTimeZone("{{TIME_ZONE}}")
-	subject.SetViewPort(420, 420)
-	subject.SetScreenResolution(420, 420)
+	*/
 
-	// Initialize tracker config
-	emitter := sp.InitEmitter(sp.RequireCollectorUri("collector.dmp.mediajel.ninja"))
+	emitter := sp.InitEmitter(sp.RequireCollectorUri("collector.dmp.mediajel.ninja")) 
 	tracker := sp.InitTracker(sp.RequireEmitter(emitter),
-		sp.OptionSubject(subject),
-		sp.OptionNamespace("sp1"),
-		sp.OptionAppId("golang-snowplow"),
-		sp.OptionPlatform("srv"),
-		sp.OptionBase64Encode(false))
+		sp.OptionSubject(subject), 
+		sp.OptionNamespace("sp1"), 
+		sp.OptionAppId("iHeartJane-golang"),
+		sp.OptionPlatform("srv"))
 
 	return func(context *gin.Context) {
 		context.Set("tracker", tracker)
@@ -45,23 +50,26 @@ func PageviewTrackingDemo(context *gin.Context) {
 	subject := context.MustGet("subject").(*sp.Subject)
 
 	tracker.TrackPageView(sp.PageViewEvent{
-		PageUrl: sp.NewString("{{DOMAIN_URL}}"),
+		PageUrl: sp.NewString("{{PAGE_URL}}"), // REQUIRED
 		Subject: subject,
 	})
 
+	context.JSON(200, gin.H{ "status": "success" })
 }
 
 func EcommerceTrackingDemo(context *gin.Context) {
 	tracker := context.MustGet("tracker").(*sp.Tracker)
-	// subject := context.MustGet("subject").(*sp.Subject)
 
+	// Example Cart Items
 	items := []sp.EcommerceTransactionItemEvent{
-		sp.EcommerceTransactionItemEvent{
+		{
 			Sku:      sp.NewString("pbz0026"),
 			Price:    sp.NewFloat64(20),
 			Quantity: sp.NewInt64(1),
+			Name:     sp.NewString("white hat"),
+			Category: sp.NewString("menswear"),
 		},
-		sp.EcommerceTransactionItemEvent{
+		{
 			Sku:      sp.NewString("pbz0038"),
 			Price:    sp.NewFloat64(15),
 			Quantity: sp.NewInt64(1),
@@ -69,10 +77,12 @@ func EcommerceTrackingDemo(context *gin.Context) {
 			Category: sp.NewString("menswear"),
 		},
 	}
+
+	// Example Transaction
 	tracker.TrackEcommerceTransaction(sp.EcommerceTransactionEvent{
 		OrderId:     sp.NewString("6a8078be"),
 		TotalValue:  sp.NewFloat64(35),
-		Affiliation: sp.NewString("some-affiliation"),
+		Affiliation: sp.NewString("{{STORE_ID}}"),
 		TaxValue:    sp.NewFloat64(6.12),
 		Shipping:    sp.NewFloat64(30),
 		City:        sp.NewString("Dijon"),
@@ -82,4 +92,7 @@ func EcommerceTrackingDemo(context *gin.Context) {
 		Items:       items,
 	})
 
+	context.JSON(200, gin.H{ "status": "success"})
 }
+
+func 
