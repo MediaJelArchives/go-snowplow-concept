@@ -82,32 +82,32 @@ func EcommerceTrackingDemo(context *gin.Context) {
 	// Example Cart Items
 	items := []sp.EcommerceTransactionItemEvent{
 		{
-			Sku:      sp.NewString("pbz0026"),
-			Price:    sp.NewFloat64(20),
+			Sku:      sp.NewString("{{PRODUCT_SKU}}"),
+			Price:    sp.NewFloat64(420),
 			Quantity: sp.NewInt64(1),
-			Name:     sp.NewString("white hat"),
-			Category: sp.NewString("menswear"),
+			Name:     sp.NewString("{{PRODUCT_NAME}}"),
+			Category: sp.NewString("{{CATEGORY}}"),
 		},
 		{
-			Sku:      sp.NewString("pbz0038"),
-			Price:    sp.NewFloat64(15),
+			Sku:      sp.NewString("{{PRODUCT_SKU}}"),
+			Price:    sp.NewFloat64(420),
 			Quantity: sp.NewInt64(1),
-			Name:     sp.NewString("red hat"),
-			Category: sp.NewString("menswear"),
+			Name:     sp.NewString("{{PRODUCT_NAME}}"),
+			Category: sp.NewString("{{CATEGORY}}"),
 		},
 	}
 
 	// Example Transaction
 	tracker.TrackEcommerceTransaction(sp.EcommerceTransactionEvent{
-		OrderId:     sp.NewString("6a8078be"),
-		TotalValue:  sp.NewFloat64(35),
+		OrderId:     sp.NewString("{{ORDER_ID}}"),
+		TotalValue:  sp.NewFloat64(420),
 		Affiliation: sp.NewString("{{STORE_ID}}"),
-		TaxValue:    sp.NewFloat64(6.12),
-		Shipping:    sp.NewFloat64(30),
-		City:        sp.NewString("Dijon"),
-		State:       sp.NewString("Bourgogne"),
-		Country:     sp.NewString("France"),
-		Currency:    sp.NewString("EUR"),
+		TaxValue:    sp.NewFloat64(4.20),
+		Shipping:    sp.NewFloat64(42),
+		City:        sp.NewString("{{CITY}}"),
+		State:       sp.NewString("{{STATE}}"),
+		Country:     sp.NewString("{{COUNTRY}}"),
+		Currency:    sp.NewString("USD"),
 		Items:       items,
 		Contexts: iHeartJaneContext,
 	})
