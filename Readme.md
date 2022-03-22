@@ -17,16 +17,3 @@ go run main.go
 # Visit localhost:3000
 
 ```
-
-# Setup using `docker-compose`
-
-Ensure you have `docker` and `docker-compose` installed
-Ensure you have `PORT 3000` open
-
-```bash
-cd go-snowplow-concept
-
-docker-compose up -d
-
-# Visit localhost:3000
-```
