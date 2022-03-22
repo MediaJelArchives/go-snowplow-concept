@@ -5,7 +5,5 @@ services:
     container_name: mediajel-golang-concept
     build:
       context: .
-    volumes:
-      - ".:/usr/src/app"
     ports:
-      - "3000:3000"
+      - "3001:3000"
