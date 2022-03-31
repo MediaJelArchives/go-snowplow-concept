@@ -31,7 +31,7 @@ func TrackerMiddleWare() gin.HandlerFunc {
 	subject.SetTimeZone("{{TIME_ZONE}}")
 	*/
 
-	emitter := sp.InitEmitter(sp.RequireCollectorUri("collector.dmp.mediajel.ninja")) 
+	emitter := sp.InitEmitter(sp.RequireCollectorUri("collector.dmp.cnna.io")) 
 	tracker := sp.InitTracker(sp.RequireEmitter(emitter),
 		sp.OptionSubject(subject), 
 		sp.OptionNamespace("sp1"), 
